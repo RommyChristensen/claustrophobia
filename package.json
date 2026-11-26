@@ -1,0 +1,15 @@
+{
+  "name": "claustrophobia",
+  "version": "1.0.0",
+  "description": "Claustrophobia: Can you outrun the blade? - miners vs assassin maze game",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test:maze": "node server/maze.js --test"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}

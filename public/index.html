@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Claustrophobia</title>
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="bg-glow"></div>
+
+  <!-- LOGIN -->
+  <section id="screen-login" class="screen">
+    <div class="card login-card">
+      <h1 class="title">CLAUSTROPHOBIA</h1>
+      <p class="subtitle">Can you outrun the blade?</p>
+      <form id="login-form" autocomplete="off">
+        <input id="login-name" class="input" placeholder="Username" maxlength="24" />
+        <input id="login-pass" class="input hidden" type="password" inputmode="numeric" placeholder="Admin password" />
+        <button class="btn btn-primary" type="submit">Enter</button>
+      </form>
+      <p id="login-error" class="error"></p>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section id="screen-lobby" class="screen">
+    <header class="topbar">
+      <div class="brand">CLAUSTROPHOBIA</div>
+      <div class="who"><span id="lobby-me"></span><button class="btn btn-ghost btn-sm" data-action="logout">Log out</button></div>
+    </header>
+    <div class="lobby-status" id="lobby-status"></div>
+    <div class="pools">
+      <div class="pool team-miner1">
+        <h2>Miner Team 1</h2>
+        <div class="slot" data-slot="miner1.miner"></div>
+        <div class="slot" data-slot="miner1.navigator"></div>
+        <div class="pool-lives">
+          <span>Lives</span>
+          <div class="stepper">
+            <button class="btn btn-ghost btn-sm admin-only" data-lives="-1" data-team="miner1" aria-label="Fewer lives">−</button>
+            <span class="lives-value" data-lives-for="miner1">3</span>
+            <button class="btn btn-ghost btn-sm admin-only" data-lives="1" data-team="miner1" aria-label="More lives">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="pool team-miner2">
+        <h2>Miner Team 2</h2>
+        <div class="slot" data-slot="miner2.miner"></div>
+        <div class="slot" data-slot="miner2.navigator"></div>
+        <div class="pool-lives">
+          <span>Lives</span>
+          <div class="stepper">
+            <button class="btn btn-ghost btn-sm admin-only" data-lives="-1" data-team="miner2" aria-label="Fewer lives">−</button>
+            <span class="lives-value" data-lives-for="miner2">3</span>
+            <button class="btn btn-ghost btn-sm admin-only" data-lives="1" data-team="miner2" aria-label="More lives">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="pool team-assassin">
+        <h2>Assassin</h2>
+        <div class="slot" data-slot="assassin"></div>
+      </div>
+    </div>
+    <div id="admin-lobby" class="admin-lobby hidden">
+      <button id="btn-start" class="btn btn-primary btn-lg" data-admin="start">Start game</button>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="screen-game" class="screen">
+    <header class="topbar">
+      <div class="brand">CLAUSTROPHOBIA</div>
+      <div id="turn-pill" class="turn-pill"></div>
+      <div class="who"><span id="game-me"></span></div>
+    </header>
+    <div id="game-body"></div>
+  </section>
+
+  <!-- OVERLAYS -->
+  <div id="overlay-battle" class="overlay hidden">
+    <div class="battle-inner">
+      <div class="battle-title">BATTLE BEGIN</div>
+      <div class="battle-vs" id="battle-vs"></div>
+      <div class="battle-msg" id="battle-msg"></div>
+      <div class="battle-actions" id="battle-actions"></div>
+    </div>
+  </div>
+
+  <div id="overlay-finish" class="overlay hidden">
+    <div class="finish-inner">
+      <div class="finish-label">VICTORY</div>
+      <div class="finish-title" id="finish-title"></div>
+      <div class="finish-scores" id="finish-scores"></div>
+      <div class="finish-actions" id="finish-actions"></div>
+    </div>
+    <canvas id="confetti"></canvas>
+  </div>
+
+  <div id="toasts"></div>
+
+  <!-- MUSIC -->
+  <div id="music" class="music">
+    <button id="music-toggle" class="music-btn" title="Background music" aria-label="Background music">♪</button>
+    <div id="music-panel" class="music-panel hidden">
+      <div class="music-head">Background music</div>
+      <select id="music-select" class="input"></select>
+      <input id="music-volume" type="range" min="0" max="1" step="0.05" />
+      <div id="music-hint" class="muted small"></div>
+    </div>
+  </div>
+
+  <div id="conn-banner" class="conn-banner hidden">Reconnecting…</div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/music.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
