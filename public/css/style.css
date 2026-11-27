@@ -295,6 +295,8 @@ body {
 }
 .music-btn.playing { border-color: var(--accent); color: var(--accent); animation: spinSlow 6s linear infinite; }
 @keyframes spinSlow { to { transform: rotate(360deg); } }
+.music-btn.is-muted { position: relative; animation: none; color: var(--muted); border-color: var(--border); }
+.music-btn.is-muted::after { content: ''; position: absolute; left: 9px; right: 9px; top: 50%; height: 2px; background: var(--assassin); transform: rotate(-45deg); }
 .music-panel { width: 240px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; display: grid; gap: 10px; animation: fadeIn .25s var(--ease); }
 .music-head { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); }
 #music-volume { width: 100%; accent-color: var(--accent); }

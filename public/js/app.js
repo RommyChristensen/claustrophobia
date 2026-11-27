@@ -80,6 +80,7 @@
   function render() {
     if (!S) return;
     const me = S.me;
+    window.Music?.setBattle(Boolean(me && (me.isAdmin || me.slot) && S.phase === 'battle' && !S.battle?.result));
     if (!me) { show('screen-login'); hideOverlays(); return; }
     const inGame = S.phase !== 'lobby' && (me.isAdmin || me.slot);
     if (!inGame) { renderLobby(); show('screen-lobby'); hideOverlays(); layoutKey = null; return; }
