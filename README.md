@@ -35,6 +35,10 @@ Put MP3 files in `public/music/` and list them in `public/music/playlist.json`:
 ```
 Each screen picks its own track and volume with the ♪ button (bottom right).
 
+### Battle music
+Save the track as `public/music/battleMusic.mp3` (it does not go in `playlist.json`).
+It plays on every player's and the admin's screen while a battle is waiting for a winner, even if the background music is set to Off, then the background track resumes. Use **Mute** in the ♪ panel to silence both background and battle music; the choice is remembered on that device.
+
 ## Deploy to Render
 1. Push this folder to a GitHub repo.
 2. On Render: **New → Blueprint** and pick the repo (it uses `render.yaml`). Or choose **New → Web Service** with build `npm install` and start `npm start`.
