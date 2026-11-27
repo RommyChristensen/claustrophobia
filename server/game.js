@@ -22,8 +22,8 @@ class Game {
   slotOf(token) { return SLOT_IDS.find((s) => this.slots[s] === token) || null; }
   teamOfSlot(slot) { return slot ? slot.split('.')[0] : null; }
   currentTurn() { return this.phase === 'lobby' ? null : ORDER[this.turnIndex]; }
-  event(text, kind = 'info', team = null) {
-    this.events.push({ seq: ++this.seq, text, kind, team, at: Date.now() });
+  event(text, kind = 'info', team = null, extra = {}) {
+    this.events.push({ seq: ++this.seq, text, kind, team, at: Date.now(), ...extra });
     if (this.events.length > 60) this.events.shift();
   }
   fail(msg) { const e = new Error(msg); e.userFacing = true; throw e; }
@@ -200,7 +200,7 @@ class Game {
         chest.collected = true;
         t.points += chest.points;
         t.chests[chest.tier]++;
-        this.event(`${TEAM_NAMES[team]} found a ${chest.tier} chest! +${chest.points}`, 'chest', team);
+        this.event(`${TEAM_NAMES[team]} found a ${chest.tier} chest! +${chest.points}`, 'chest', team, { tier: chest.tier });
       }
     }
 

@@ -171,6 +171,36 @@ body {
 .pawn.miner2 { --team: var(--miner2); }
 .pawn.assassin { --team: var(--assassin); }
 
+/* ---------- board images (public/tiles) ---------- */
+.img-tile .cell:not(.wall) { background: url(../tiles/tile.png) center / 100% 100% border-box; }
+.img-wall .cell.wall { background: url(../tiles/wall.png) center / 100% 100% border-box; box-shadow: none; }
+/* darkened so walls read clearly against the floor; raise the number for lighter walls */
+.img-wall .cell.wall { filter: brightness(.4); }
+/* lets a see-through wall image sit on top of the floor tile */
+.img-tile.img-wall .cell.wall { background: url(../tiles/wall.png) center / 100% 100% border-box, url(../tiles/tile.png) center / 100% 100% border-box; }
+
+.img-chest-bronze .chest-bronze, .img-chest-silver .chest-silver, .img-chest-gold .chest-gold, .img-vault .vault {
+  inset: 6%; border: 0; border-radius: 0; box-shadow: none; color: transparent;
+}
+/* chest size: raise the inset for smaller chests */
+.img-chest-bronze .chest-bronze, .img-chest-silver .chest-silver, .img-chest-gold .chest-gold { inset: 14%; }
+.img-chest-bronze .chest-bronze { background: url(../tiles/chest-bronze.png) center / contain no-repeat; }
+.img-chest-silver .chest-silver { background: url(../tiles/chest-silver.png) center / contain no-repeat; }
+.img-chest-gold .chest-gold { background: url(../tiles/chest-gold.png) center / contain no-repeat; }
+.img-vault .vault { background: url(../tiles/vault.png) center / contain no-repeat; animation: pop .35s var(--ease), vaultGlow 2.4s ease-in-out infinite; }
+@keyframes vaultGlow { 50% { filter: drop-shadow(0 0 8px var(--vault)); } }
+
+.img-pawn-miner1 .pawn.miner1 > i, .img-pawn-miner2 .pawn.miner2 > i, .img-pawn-assassin .pawn.assassin > i {
+  width: 90%; height: 90%; border-radius: 0; transform: none; box-shadow: none;
+  background: center / contain no-repeat; filter: drop-shadow(0 0 4px var(--team));
+}
+.img-pawn-miner1 .pawn.miner1 > i { background-image: url(../tiles/pawn-miner1.png); }
+.img-pawn-miner2 .pawn.miner2 > i { background-image: url(../tiles/pawn-miner2.png); }
+.img-pawn-assassin .pawn.assassin > i { background-image: url(../tiles/pawn-assassin.png); }
+.img-pawn-miner1 .pawn.miner1 > i > b, .img-pawn-miner2 .pawn.miner2 > i > b, .img-pawn-assassin .pawn.assassin > i > b { display: none; }
+.img-pawn-miner1 .pawn.miner1.active > i, .img-pawn-miner2 .pawn.miner2.active > i, .img-pawn-assassin .pawn.assassin.active > i { animation: imgPawnPulse 1.2s ease-in-out infinite; }
+@keyframes imgPawnPulse { 50% { filter: drop-shadow(0 0 10px var(--team)) drop-shadow(0 0 4px var(--team)); } }
+
 .board.shake { animation: shake .4s; }
 @keyframes shake { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
 
@@ -205,6 +235,19 @@ body {
 .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.lg-bronze { background: var(--bronze); }
+.lg-silver { background: var(--silver); }
+.lg-gold { background: var(--gold); }
+.lg-vault { border: 2px solid var(--vault); }
+.lg-wall { background: var(--wall); }
+.img-chest-bronze .lg-bronze, .img-chest-silver .lg-silver, .img-chest-gold .lg-gold, .img-vault .lg-vault, .img-wall .lg-wall {
+  width: 20px; height: 20px; border: 0; background: center / contain no-repeat;
+}
+.img-chest-bronze .lg-bronze { background-image: url(../tiles/chest-bronze.png); }
+.img-chest-silver .lg-silver { background-image: url(../tiles/chest-silver.png); }
+.img-chest-gold .lg-gold { background-image: url(../tiles/chest-gold.png); }
+.img-vault .lg-vault { background-image: url(../tiles/vault.png); }
+.img-wall .lg-wall { background-image: url(../tiles/wall.png); filter: brightness(.4); outline: 1px solid var(--border); }
 
 .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
@@ -268,6 +311,31 @@ body {
 .battle-vs { font-size: clamp(18px, 4vw, 28px); font-weight: 700; margin-top: 8px; }
 .battle-msg { color: var(--muted); margin-top: 14px; min-height: 1.4em; }
 .battle-actions, .finish-actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+
+/* battle screen images (public/background) */
+.img-battle-begin-background #overlay-battle {
+  background: linear-gradient(rgba(5, 6, 10, .15), rgba(5, 6, 10, .15) 55%, rgba(5, 6, 10, .75)),
+    url(../background/battle-begin-background.jpeg) center / cover no-repeat, #05060a;
+  backdrop-filter: none;
+}
+.img-battle-begin-text #overlay-battle .battle-title {
+  width: min(560px, 86vw, 62vh); aspect-ratio: 770 / 615; margin: 0 auto; font-size: 0; text-shadow: none;
+  background: url(../background/battle-begin-text.png) center / contain no-repeat;
+  animation: battleImgIn .7s var(--ease), battleImgPulse 1.4s ease-in-out .7s infinite;
+}
+@keyframes battleImgIn { from { transform: scale(2.2); opacity: 0; } }
+@keyframes battleImgPulse { 50% { transform: scale(1.03); filter: drop-shadow(0 0 22px rgba(239, 68, 68, .6)); } }
+/* keep the text readable over the artwork */
+#overlay-battle .battle-vs { font-size: clamp(22px, 4.5vw, 40px); font-weight: 800; text-shadow: 0 2px 4px #000, 0 0 18px #000; }
+#overlay-battle .battle-msg { color: var(--text); text-shadow: 0 1px 3px #000, 0 0 12px #000; }
+#overlay-battle .battle-actions .btn { background: rgba(11, 13, 18, .88); }
+#overlay-battle .battle-actions .btn-primary { background: var(--accent); }
+/* upright phones: show the whole artwork at the top and put the text under it */
+@media (orientation: portrait) {
+  /* the artwork is 56vw tall; the text is centred in the space below it */
+  .img-battle-begin-background #overlay-battle { background: url(../background/battle-begin-background.jpeg) top center / 100% auto no-repeat, #05060a; padding-top: 56vw; overflow-y: auto; }
+  .img-battle-begin-text #overlay-battle .battle-title { width: min(560px, 76vw, 36vh); }
+}
 
 .finish-label { color: var(--muted); letter-spacing: .4em; font-weight: 700; }
 .finish-title { font-size: clamp(36px, 9vw, 90px); font-weight: 800; color: var(--team); text-shadow: 0 0 40px var(--team); animation: battleIn .8s var(--ease); }

@@ -121,6 +121,18 @@
     }
   }
 
+  // ---------- board and battle images ----------
+  // Each image is optional: once it loads, <html> gets "img-<name>" and the CSS swaps it in
+  [
+    ...['tile', 'wall', 'chest-bronze', 'chest-silver', 'chest-gold', 'vault', 'pawn-miner1', 'pawn-miner2', 'pawn-assassin'].map((n) => `tiles/${n}.png`),
+    'background/battle-begin-background.jpeg',
+    'background/battle-begin-text.png',
+  ].forEach((src) => {
+    const img = new Image();
+    img.onload = () => document.documentElement.classList.add(`img-${src.split('/').pop().split('.')[0]}`);
+    img.src = src;
+  });
+
   // ---------- board component ----------
   function createBoard(host) {
     host.innerHTML = `
@@ -224,11 +236,11 @@
 
   const legendHTML = `
     <div class="legend">
-      <span><i style="background:var(--bronze)"></i>Bronze 500</span>
-      <span><i style="background:var(--silver)"></i>Silver 1000</span>
-      <span><i style="background:var(--gold)"></i>Gold 2000</span>
-      <span><i style="border:2px solid var(--vault)"></i>Vault ×3</span>
-      <span><i style="background:var(--wall)"></i>Wall</span>
+      <span><i class="lg-bronze"></i>Bronze 500</span>
+      <span><i class="lg-silver"></i>Silver 1000</span>
+      <span><i class="lg-gold"></i>Gold 2000</span>
+      <span><i class="lg-vault"></i>Vault ×3</span>
+      <span><i class="lg-wall"></i>Wall</span>
     </div>`;
 
   const dpadHTML = `
@@ -412,6 +424,7 @@
     const me = S.me;
     for (const e of evs) {
       if (e.seq <= lastSeq) continue;
+      if (e.kind === 'chest' && (me.isAdmin || e.team === me.team)) window.Music?.playChest(e.tier);
       if (me.isAdmin) { if (e.kind === 'blocked') board?.shake(); continue; }
       if (e.kind === 'blocked' && e.team === me.team) { toast('Blocked! You hit a wall. Turn lost.', 'blocked'); board?.shake(); navigator.vibrate?.(200); }
       else if (e.kind === 'chest' && (e.team === me.team || me.role === 'assassin')) toast(e.text, 'chest');

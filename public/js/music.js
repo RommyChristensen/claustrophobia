@@ -1,4 +1,4 @@
-/* Background music picker (tracks are listed in /music/playlist.json) and the battle track */
+/* Background music picker (tracks are listed in /music/playlist.json), battle track and chest sounds */
 (() => {
   const audio = new Audio();
   audio.loop = true;
@@ -17,12 +17,18 @@
   battle.preload = 'auto';
   let inBattle = false; // a battle is waiting for its winner
   let battleOn = false; // the battle track has actually started
-  let primed = false;
+  const chests = Object.fromEntries(['bronze', 'silver', 'gold'].map((t) => [t, new Audio(`music/${t}Music.mp3`)]));
+  const CHEST_MAX_MS = 6000; // longer files are cut off here
+  let chestNow = null;       // the chest sound being played
+  let chestTimer;
+  const effects = [battle, ...Object.values(chests)];
+  const primed = new Set();
   let isMuted = get('cl_music_muted', '0') === '1';
 
-  // one slider and mute button for both tracks; "muted" is needed because iOS ignores volume
+  // one slider and mute button for every sound; "muted" is needed because iOS ignores volume
+  function setLevel(a) { a.volume = Number(vol.value); a.muted = isMuted || Number(vol.value) === 0; }
   function applyVolume() {
-    for (const a of [audio, battle]) { a.volume = Number(vol.value); a.muted = isMuted || Number(vol.value) === 0; }
+    [audio, ...effects].forEach(setLevel);
     muteBtn.textContent = isMuted ? 'Unmute' : 'Mute';
     btn.classList.toggle('is-muted', isMuted);
   }
@@ -40,9 +46,10 @@
     set('cl_music_track', file);
     if (!file) { audio.pause(); if (!battleOn) btn.classList.remove('playing'); return; }
     audio.src = 'music/' + encodeURIComponent(file);
-    if (!battleOn) resumeBackground(); // otherwise it starts when the battle ends
+    resumeBackground();
   }
   function resumeBackground() {
+    if (battleOn || chestNow) return; // it starts when they finish
     audio.play().then(() => btn.classList.add('playing')).catch(() => {
       btn.classList.remove('playing');
       hint.textContent = 'Tap the page, then pick the track again to play.';
@@ -68,17 +75,44 @@
     if (sel.value && audio.src) resumeBackground();
     else btn.classList.remove('playing');
   }
-  window.Music = { setBattle };
+  function endChest() {
+    if (!chestNow) return;
+    clearTimeout(chestTimer);
+    chestNow.pause();
+    chestNow = null;
+    if (sel.value && audio.src) resumeBackground();
+  }
 
-  // phones only allow sound after a tap, so unlock the battle track on the first one
+  function playChest(tier) {
+    const a = chests[tier];
+    if (!a) return;
+    clearTimeout(chestTimer);
+    if (chestNow && chestNow !== a) chestNow.pause();
+    chestNow = a;
+    setLevel(a);
+    a.currentTime = 0;
+    a.play().then(() => {
+      if (chestNow !== a) return;
+      primed.add(a);
+      audio.pause();
+      chestTimer = setTimeout(endChest, CHEST_MAX_MS);
+    }).catch(() => { if (chestNow === a) endChest(); }); // missing file or autoplay blocked
+  }
+  for (const a of Object.values(chests)) a.addEventListener('ended', () => { if (chestNow === a) endChest(); });
+  window.Music = { setBattle, playChest };
+
+  // phones only allow sound after a tap, so unlock the battle and chest sounds on the first one
   // (this also retries if a battle was already running when the page loaded)
   document.addEventListener('click', () => {
-    if (inBattle) { if (!battleOn) startBattle(); return; }
-    if (primed) return;
-    battle.muted = true;
-    battle.play().then(() => { primed = true; if (!inBattle) battle.pause(); })
-      .catch(() => {})
-      .finally(applyVolume);
+    if (inBattle && !battleOn) startBattle();
+    const wanted = (a) => (a === battle && inBattle) || a === chestNow;
+    for (const a of effects) {
+      if (primed.has(a) || wanted(a)) continue;
+      a.muted = true;
+      a.play().then(() => { primed.add(a); if (!wanted(a)) a.pause(); })
+        .catch(() => {})
+        .finally(() => setLevel(a));
+    }
   }, true);
   audio.addEventListener('error', () => { if (audio.src) { hint.textContent = 'Could not load that file.'; btn.classList.remove('playing'); } });
 

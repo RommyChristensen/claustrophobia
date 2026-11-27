@@ -37,7 +37,30 @@ Each screen picks its own track and volume with the ♪ button (bottom right).
 
 ### Battle music
 Save the track as `public/music/battleMusic.mp3` (it does not go in `playlist.json`).
-It plays on every player's and the admin's screen while a battle is waiting for a winner, even if the background music is set to Off, then the background track resumes. Use **Mute** in the ♪ panel to silence both background and battle music; the choice is remembered on that device.
+It plays on every player's and the admin's screen while a battle is waiting for a winner, even if the background music is set to Off, then the background track resumes. Use **Mute** in the ♪ panel to silence all music and sounds; the choice is remembered on that device.
+
+### Chest sounds
+Save them as `public/music/bronzeMusic.mp3`, `silverMusic.mp3` and `goldMusic.mp3`.
+When a team collects a chest, its miner, its navigator and the admin hear the sound for that tier. The background track pauses meanwhile. Only the first 6 seconds are played.
+
+## Board images
+Put PNG files in `public/tiles/` with these names, then reload the page. Square images (about 256×256) work best. Any file you leave out keeps the default look.
+
+| File | Used for | Background |
+|---|---|---|
+| `tile.png` | floor cell | solid |
+| `wall.png` | wall cell | solid or transparent |
+| `chest-bronze.png`, `chest-silver.png`, `chest-gold.png` | chests | transparent |
+| `vault.png` | treasure vault | transparent |
+| `pawn-miner1.png`, `pawn-miner2.png`, `pawn-assassin.png` | pawns | transparent |
+
+## Battle screen images
+Put these in `public/background/`. Either can be left out to keep the default look.
+
+| File | Used for |
+|---|---|
+| `battle-begin-background.jpeg` | full-screen artwork (landscape, about 1920 px wide) |
+| `battle-begin-text.png` | title image with a transparent background, trimmed. If you replace it with a different shape, update `aspect-ratio` in `style.css` |
 
 ## Deploy to Render
 1. Push this folder to a GitHub repo.
